@@ -1,19 +1,21 @@
 package main
 
 import (
-	"github.com/halfdan/adventofcode2021/day01"
-	"github.com/halfdan/adventofcode2021/day02"
 	"github.com/halfdan/adventofcode2021/day03"
-	"github.com/halfdan/adventofcode2021/day04"
-	"github.com/halfdan/adventofcode2021/day05"
-	"github.com/halfdan/adventofcode2021/day06"
+	"github.com/halfdan/adventofcode2021/day15"
 )
 
 func main() {
-	day01.Tasks()
-	day02.Tasks()
+	// day01.Tasks()
+	// day02.Tasks()
 	day03.Tasks()
-	day04.Tasks()
-	day05.Tasks()
-	day06.Tasks()
+	// day04.Tasks()
+	// day05.Tasks()
+	// day06.Tasks()
+	// day07.Tasks()
+	// day08.Tasks()
+	// day09.Tasks()
+	// day10.Tasks()
+	// day14.Tasks()
+	day15.Tasks()
 }

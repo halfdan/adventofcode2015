@@ -3,15 +3,15 @@ package day03
 import (
 	"fmt"
 	"io/ioutil"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 const filename = "day03/aoc3.txt"
 
 type BinTree struct {
-	one *BinTree
-	zero *BinTree
+	one   *BinTree
+	zero  *BinTree
 	value string
 }
 
@@ -55,14 +55,14 @@ func (bt *BinTree) insert(input string) {
 func Tasks() {
 	data := getInputs()
 
-	var cntr []int = make([]int, len(data[0]))
+	cntr := make([]int, len(data[0]))
 	for _, line := range data {
 		for idx, ch := range line {
 			switch ch {
-				case '1':
-					cntr[idx] += 1
-				case '0':
-					cntr[idx] -= 1
+			case '1':
+				cntr[idx] += 1
+			case '0':
+				cntr[idx] -= 1
 			}
 		}
 	}
@@ -70,20 +70,64 @@ func Tasks() {
 	var gamma, epsilon uint64
 	for idx, val := range cntr {
 		if val > 0 {
-			gamma = gamma | 1 << (len(cntr) - 1 - idx)
+			gamma = gamma | 1<<(len(cntr)-1-idx)
 		} else {
-			epsilon = epsilon | 1 << (len(cntr) - 1 - idx)
+			epsilon = epsilon | 1<<(len(cntr)-1-idx)
 		}
 	}
-	fmt.Printf("Day 03 Task 01: %d\n", gamma * epsilon)
+	fmt.Printf("Day 03 Task 01: %d\n", gamma*epsilon)
 
+	numbers := []uint{}
+
+	for _, line := range data {
+		val, _ := strconv.ParseUint(line, 2, len(line))
+		numbers = append(numbers, uint(val))
+	}
+
+	a, b := task2_filter(numbers)
+	fmt.Printf("Day 03 Task 02: %d\n", a*b)
+
+	oxygen, co2 := task2(data)
+	fmt.Printf("Day 03 Task 02: %d\n", oxygen*co2)
+}
+
+func filterNumbers(list []uint, pos int, larger bool) uint {
+	if len(list) == 1 {
+		return list[0]
+	}
+	mask := uint(1 << pos)
+	ones := []uint{}
+	zeros := []uint{}
+
+	for _, item := range list {
+		if item&mask >= mask {
+			ones = append(ones, item)
+		} else {
+			zeros = append(zeros, item)
+		}
+	}
+
+	if (len(ones) >= len(zeros) && larger) || (len(ones) < len(zeros) && !larger) {
+		return filterNumbers(ones, pos-1, larger)
+	}
+	return filterNumbers(zeros, pos-1, larger)
+}
+
+func task2_filter(numbers []uint) (uint, uint) {
+	oxygen := filterNumbers(numbers, 11, true)
+	co2 := filterNumbers(numbers, 11, false)
+
+	return oxygen, co2
+}
+
+func task2(data []string) (int64, int64) {
 	root := BinTree{}
 	for _, line := range data {
 		root.insert(line)
 	}
 
 	// Oxygen generator value
-	var node *BinTree = &root
+	node := &root
 	for node.one != nil || node.zero != nil {
 		if node.one.size() >= node.zero.size() {
 			node = node.one
@@ -104,8 +148,7 @@ func Tasks() {
 		}
 	}
 	co2, _ := strconv.ParseInt((*node).value, 2, 16)
-	
-	fmt.Printf("Day 03 Task 02: %d\n", oxygen * co2)
+	return oxygen, co2
 }
 
 func getInputs() []string {
@@ -114,5 +157,5 @@ func getInputs() []string {
 		panic(err)
 	}
 
-	return strings.Split(string(bytes), "\n")
+	return strings.Split(strings.TrimSpace(string(bytes)), "\n")
 }
